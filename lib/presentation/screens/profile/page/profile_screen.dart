@@ -3,6 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metro_city_pulse/core/provider/theme/app_theme_provider.dart';
 import 'package:metro_city_pulse/core/themes/app_assets.dart';
 import 'package:metro_city_pulse/core/themes/app_colors.dart';
+import 'package:metro_city_pulse/core/themes/app_theme.dart';
+import 'package:metro_city_pulse/core/themes/app_theme_mode.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
 import 'package:metro_city_pulse/presentation/utils/navigation_util.dart';
 import 'package:vvk_ui_kit/vvk_ui_kit.dart' hide NavigationUtil;
@@ -29,7 +31,7 @@ class ProfileScreen extends ConsumerWidget {
             children: [
               Expanded(
                 flex: 1,
-                child: TopPortion(colors: colors, assets: theme.assets),
+                child: TopPortion(colors: colors, assets: theme.assets, theme: theme),
               ),
               const SizedBox(height: 16),
               Expanded(
@@ -174,8 +176,14 @@ class _ProfileActionsBar extends ConsumerWidget {
 class TopPortion extends StatelessWidget {
   final AppColors colors;
   final AppAssets assets;
+  final AppTheme theme;
 
-  const TopPortion({super.key, required this.colors, required this.assets});
+  const TopPortion({
+    super.key,
+    required this.colors,
+    required this.assets,
+    required this.theme,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -239,7 +247,9 @@ class TopPortion extends StatelessWidget {
                     assets.editSquare,
                     width: 24,
                     height: 24,
-                    color: colors.white,
+                    color: theme.mode == AppThemeMode.dark
+                        ? colors.white
+                        : colors.primaryColor,
                     fit: BoxFit.contain,
                   ),
                 ],

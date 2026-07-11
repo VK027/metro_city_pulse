@@ -21,18 +21,18 @@ class SeverityBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: isMobile ? 90 : kMinInteractiveDimension,
-      decoration: BoxDecoration(color: Color(0xFF535D60), borderRadius: BorderRadius.circular(6.0)),
+      decoration: BoxDecoration(
+        color: const Color(0xFF535D60),
+        borderRadius: BorderRadius.circular(6.0),
+      ),
       child: isMobile
           ? Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       buildSeverityText(),
@@ -46,11 +46,8 @@ class SeverityBarWidget extends StatelessWidget {
                           : closeIconButton(iconSize: 12.0),
                     ],
                   ),
-                  Flexible(
-                    fit: FlexFit.tight,
-                    flex: 1,
-                    child: severityListWidget(),
-                  ),
+                  const SizedBox(height: 4),
+                  Expanded(child: severityListWidget()),
                 ],
               ),
             )
@@ -60,17 +57,23 @@ class SeverityBarWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SeverityContainerWidget(
-                  color: Color(0xFF636F74),
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(6.0), bottomLeft: Radius.circular(6.0)),
+                  color: const Color(0xFF636F74),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(6.0),
+                    bottomLeft: Radius.circular(6.0),
+                  ),
                   child: buildSeverityText(),
                 ),
                 severityListWidget(),
                 Visibility(
                   visible: selectedSeverityIndex != -1,
                   child: SeverityContainerWidget(
-                    color: Color(0xFF636F74),
-                    borderRadius: BorderRadius.only(topRight: Radius.circular(6.0), bottomRight: Radius.circular(6.0)),
+                    color: const Color(0xFF636F74),
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(6.0),
+                      bottomRight: Radius.circular(6.0),
+                    ),
                     child: closeIconButton(),
                   ),
                 ),
@@ -97,8 +100,8 @@ class SeverityBarWidget extends StatelessWidget {
   }
 
   Widget buildSeverityText() {
-    return UIText(
-      "Severities",
+    return const UIText(
+      'Severities',
       color: Colors.white,
       size: 14,
       fontWeight: FontWeight.w400,
@@ -106,69 +109,74 @@ class SeverityBarWidget extends StatelessWidget {
   }
 
   Widget severityListWidget() {
-    double dividerHeight = isMobile ? 18 : 24;
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.horizontal,
-      itemCount: severities.length,
-      padding: EdgeInsets.zero,
-      itemBuilder: (context, index) {
-        final severity = severities[index];
-        final isSelected = index == selectedSeverityIndex;
-        final bool last = index == severities.length - 1;
-        return GestureDetector(
-          onTap: () => onSelected(index),
-          behavior: HitTestBehavior.opaque,
-          child: Row(
+    final double itemHeight = isMobile ? 30.0 : kMinInteractiveDimension;
+    final double dividerHeight = isMobile ? 18.0 : 24.0;
+
+    return SizedBox(
+      height: itemHeight,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: severities.length,
+        padding: EdgeInsets.zero,
+        itemBuilder: (context, index) {
+          final severity = severities[index];
+          final isSelected = index == selectedSeverityIndex;
+          final bool last = index == severities.length - 1;
+
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                padding: EdgeInsets.all(8.0),
-                decoration: isSelected
-                    ? BoxDecoration(
-                        color: isSelected
-                            ? Color(0xFFB3B3B3)
-                            : Colors.transparent,
-                        //borderRadius: BorderRadius.circular(6.0),
-                        borderRadius: last
-                            ? BorderRadius.only(
-                                topRight: Radius.circular(6.0),
-                                bottomRight: Radius.circular(6.0),
-                              )
-                            : BorderRadius.circular(6.0),
-                        //border: Border.all(color: Colors.white, width: 2),
-                      )
-                    : BoxDecoration(),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _SeverityDot(
-                      size: isMobile ? 8 : 12,
-                      color: severity["color"] as Color,
-                    ),
-                    SizedBox(width: 6),
-                    UIText(
-                      "${severity['label']} – ${severity['count']}"
-                          .toUpperCase(),
-                      size: isMobile ? 12 : 14,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ],
+              GestureDetector(
+                onTap: () => onSelected(index),
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  height: itemHeight,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? const Color(0xFFB3B3B3)
+                        : Colors.transparent,
+                    borderRadius: last
+                        ? const BorderRadius.only(
+                            topRight: Radius.circular(6.0),
+                            bottomRight: Radius.circular(6.0),
+                          )
+                        : BorderRadius.circular(6.0),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _SeverityDot(
+                        size: isMobile ? 8 : 12,
+                        color: severity['color'] as Color,
+                      ),
+                      const SizedBox(width: 6),
+                      UIText(
+                        '${severity['label']} – ${severity['count']}'.toUpperCase(),
+                        size: isMobile ? 12 : 14,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               if (!last)
                 Container(
-                  //margin: EdgeInsets.symmetric(horizontal: 18),
                   width: 1.5,
                   height: dividerHeight,
-                  color: Color(0xFF23282B),
+                  margin: EdgeInsets.symmetric(
+                    vertical: (itemHeight - dividerHeight) / 2,
+                  ),
+                  color: const Color(0xFF23282B),
                 ),
             ],
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
@@ -194,7 +202,7 @@ class SeverityContainerWidget extends StatelessWidget {
       alignment: Alignment.center,
       padding: padding,
       decoration: BoxDecoration(color: color, borderRadius: borderRadius),
-      child: child ?? SizedBox.shrink(),
+      child: child ?? const SizedBox.shrink(),
     );
   }
 }

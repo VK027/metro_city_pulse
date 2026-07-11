@@ -25,6 +25,13 @@ class SignupScreen extends ConsumerWidget {
       appBar: UIAppBar(
         title: "create_account".tr(ref).capitalizeAllFirstLetters(),
         showBackButton: true,
+        backgroundColor: theme.colors.appBarBackgroundColor,
+        titleColor: Colors.white,
+        iconColor: Colors.white,
+        toolbarHeight: kToolbarHeight,
+        centerTitle: true,
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),

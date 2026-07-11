@@ -25,6 +25,9 @@ class CustomMapScreen extends ConsumerStatefulWidget {
 }
 
 class _NewCustomMapScreenState extends ConsumerState<CustomMapScreen> {
+  /// Right-side gutter on mobile so the severity bar does not sit under FABs.
+  static const double _kMobileFabReserveWidth = 56;
+
   GoogleMapController? _mapController;
   LatLng? _selectedMarkerLatLng;
   MapMarkerData? _selectedMarker;
@@ -371,7 +374,7 @@ class _NewCustomMapScreenState extends ConsumerState<CustomMapScreen> {
         ? Positioned(
             bottom: isMobile ? 8 : 18,
             left: isMobile ? 8 : null,
-            right: isMobile ? kBottomNavigationBarHeight : null,
+            right: isMobile ? _kMobileFabReserveWidth : null,
             child: SeverityBarWidget(
               onSelected: (index) =>
                   ref.read(selectedSeverityProvider.notifier).state = index,

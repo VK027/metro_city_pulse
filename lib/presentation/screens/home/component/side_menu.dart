@@ -215,7 +215,6 @@ class SideMenu extends StatelessWidget {
 }
 
 class SideMenuItem extends StatelessWidget {
-  static const double _kIconSize = 20;
   static const double _kIconBoxSize = 24;
 
   final String? icon;
@@ -291,11 +290,11 @@ class SideMenuItem extends StatelessWidget {
       height: _kIconBoxSize,
       child: Center(
         child: iconData != null
-            ? Icon(iconData, size: _kIconSize, color: color)
+            ? Icon(iconData, size: _kIconBoxSize, color: color)
             : UIImage(
                 icon!,
-                width: _kIconSize,
-                height: _kIconSize,
+                width: _kIconBoxSize,
+                height: _kIconBoxSize,
                 color: color,
                 fit: BoxFit.contain,
               ),

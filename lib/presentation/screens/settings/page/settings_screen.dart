@@ -19,6 +19,13 @@ class SettingsScreen extends ConsumerWidget {
       appBar: UIAppBar(
         title: "settings".tr(ref).capitalizeAllFirstLetters(),
         showBackButton: true,
+        backgroundColor: themeMode.colors.appBarBackgroundColor,
+        titleColor: Colors.white,
+        iconColor: Colors.white,
+        toolbarHeight: kToolbarHeight,
+        centerTitle: true,
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

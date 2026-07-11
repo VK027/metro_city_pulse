@@ -29,7 +29,7 @@ A cross-platform Flutter app for real-time smart city monitoring and traffic inc
 | Auth | [firebase_core](https://pub.dev/packages/firebase_core), [firebase_auth](https://pub.dev/packages/firebase_auth), [msal_auth](https://pub.dev/packages/msal_auth) / [msal_js](https://pub.dev/packages/msal_js) (MSAL not yet integrated) |
 | Media | [video_player](https://pub.dev/packages/video_player) |
 | Storage | [shared_preferences](https://pub.dev/packages/shared_preferences) |
-| UI | [flutter_svg](https://pub.dev/packages/flutter_svg), [syncfusion_flutter_datepicker](https://pub.dev/packages/syncfusion_flutter_datepicker), Poppins font |
+| UI | [vvk_ui_kit](https://pub.dev/packages/vvk_ui_kit) (Material 3 theming, reusable widgets & utilities), [flutter_svg](https://pub.dev/packages/flutter_svg), [syncfusion_flutter_datepicker](https://pub.dev/packages/syncfusion_flutter_datepicker), Poppins font |
 | Networking | [connectivity_plus](https://pub.dev/packages/connectivity_plus) |
 | Serialization | [json_annotation](https://pub.dev/packages/json_annotation) / [json_serializable](https://pub.dev/packages/json_serializable) |
 
@@ -193,6 +193,14 @@ flutter test
 ## License
 
 Private project — not published to pub.dev (`publish_to: 'none'`).
+
+## Support
+
+If this project helps you, consider supporting its development:
+
+<a href="https://buymeacoffee.com/vvk27" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50" width="210"></a>
+
+[buymeacoffee.com/vvk27](https://buymeacoffee.com/vvk27)
 
 ---
 

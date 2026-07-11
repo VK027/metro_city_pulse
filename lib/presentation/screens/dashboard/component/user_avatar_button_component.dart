@@ -1,10 +1,8 @@
 import 'package:metro_city_pulse/core/themes/app_theme.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_avatar_with_edit_widget.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_image_widget.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class UserAvatarButtonComponent extends StatelessWidget {
   final AppTheme theme;
@@ -66,7 +64,7 @@ class UserAvatarButtonComponent extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    AppImage(
+                    UIImage(
                       item["image"],
                       color: colors.text,
                       height: 20,
@@ -74,7 +72,7 @@ class UserAvatarButtonComponent extends StatelessWidget {
                     ),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: AppText(
+                      child: UIText(
                         item["label"],
                         size: 14,
                         fontWeight: FontWeight.w500,
@@ -89,12 +87,25 @@ class UserAvatarButtonComponent extends StatelessWidget {
         }
         return itemViews;
       },
-      child: AppAvatarWithEditWidget(
-        theme: theme,
-        profilePic: profilePic,
-        userName: userName,
+      child: UIAvatarWithEdit(
+        image: profilePic.isNotEmpty
+            ? UIImage(
+                profilePic,
+                isAsset: false,
+                height: size,
+                width: size,
+                fit: BoxFit.fill,
+              )
+            : null,
+        displayName: userName,
         size: size,
-        isEditRequired: isEditRequired,
+        showEditOverlay: isEditRequired,
+        gradientColors: [
+          colors.tempGradientColor1,
+          colors.gradientColor2,
+        ],
+        initialsColor: colors.white,
+        borderColor: colors.white.withValues(alpha: 0.3),
       ),
     );
   }
@@ -103,17 +114,17 @@ class UserAvatarButtonComponent extends StatelessWidget {
     final items = [
       {
         "id": 0,
-        "label": "profile".tr(ref).toAllCapitalize(),
+        "label": "profile".tr(ref).capitalizeAllFirstLetters(),
         "image": assets.userProfileIcon,
       },
       {
         "id": 1,
-        "label": "settings".tr(ref).toAllCapitalize(),
+        "label": "settings".tr(ref).capitalizeAllFirstLetters(),
         "image": assets.settingIcon,
       },
       {
         "id": 2,
-        "label": "logout".tr(ref).toAllCapitalize(),
+        "label": "logout".tr(ref).capitalizeAllFirstLetters(),
         "image": assets.powerOff,
       },
     ];

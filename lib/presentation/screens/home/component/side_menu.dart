@@ -2,11 +2,9 @@ import 'package:metro_city_pulse/core/themes/app_theme.dart';
 import 'package:metro_city_pulse/presentation/screens/dashboard/component/user_avatar_button_component.dart';
 import 'package:metro_city_pulse/presentation/screens/home/provider/menu_state_provider.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_image_widget.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_widget.dart';
-import 'package:metro_city_pulse/presentation/widgets/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class SideMenu extends StatelessWidget {
   final AppTheme theme;
@@ -41,7 +39,7 @@ class SideMenu extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 20),
-          AppImage(
+          UIImage(
             assets.policeLogo,
             width: 40,
             height: 40,
@@ -51,11 +49,11 @@ class SideMenu extends StatelessWidget {
           SideMenuItem(
             icon: assets.dashboardIcon,
             color: colors.white,
-            label: "dashboard".tr(ref).toAllCapitalize(),
+            label: "dashboard".tr(ref).capitalizeAllFirstLetters(),
             isSelected: selectedItem == MenuItemType.dashboard,
             onTap: () {
               onMenuSelected?.call(MenuItemType.dashboard);
-              if (Responsive.isMobile(context)) {
+              if (Responsive.isMobileContext(context)) {
                 Navigator.pop(context);
               }
             },
@@ -63,11 +61,11 @@ class SideMenu extends StatelessWidget {
           SideMenuItem(
             icon: assets.statsIcon,
             color: colors.white,
-            label: "stats".tr(ref).toAllCapitalize(),
+            label: "stats".tr(ref).capitalizeAllFirstLetters(),
             isSelected: selectedItem == MenuItemType.stats,
             onTap: () {
               onMenuSelected?.call(MenuItemType.stats);
-              if (Responsive.isMobile(context)) {
+              if (Responsive.isMobileContext(context)) {
                 Navigator.pop(context);
               }
             },
@@ -75,11 +73,11 @@ class SideMenu extends StatelessWidget {
           SideMenuItem(
             icon: assets.alertsIcon,
             color: colors.white,
-            label: "alerts".tr(ref).toAllCapitalize(),
+            label: "alerts".tr(ref).capitalizeAllFirstLetters(),
             isSelected: selectedItem == MenuItemType.alerts,
             onTap: () {
               onMenuSelected?.call(MenuItemType.alerts);
-              if (Responsive.isMobile(context)) {
+              if (Responsive.isMobileContext(context)) {
                 Navigator.pop(context);
               }
             },
@@ -87,40 +85,40 @@ class SideMenu extends StatelessWidget {
           SideMenuItem(
             iconData: Icons.notifications_none_rounded,
             color: colors.white,
-            label: "notifications".tr(ref).toAllCapitalize(),
+            label: "notifications".tr(ref).capitalizeAllFirstLetters(),
             isSelected: false,
             onTap: () {
               _showNotificationsSnackBar(context);
-              if (Responsive.isMobile(context)) {
+              if (Responsive.isMobileContext(context)) {
                 Navigator.pop(context);
               }
             },
           ),
           Visibility(
-            visible: Responsive.isMobile(context),
+            visible: Responsive.isMobileContext(context),
             child: SideMenuItem(
               icon: assets.userProfileIcon,
               color: colors.white,
-              label: "profile".tr(ref).toAllCapitalize(),
+              label: "profile".tr(ref).capitalizeAllFirstLetters(),
               isSelected: selectedItem == MenuItemType.profile,
               onTap: () {
                 onMenuSelected?.call(MenuItemType.profile);
-                if (Responsive.isMobile(context)) {
+                if (Responsive.isMobileContext(context)) {
                   Navigator.pop(context);
                 }
               },
             ),
           ),
           Visibility(
-            visible: Responsive.isMobile(context),
+            visible: Responsive.isMobileContext(context),
             child: SideMenuItem(
               icon: assets.settingIcon,
               color: colors.white,
-              label: "settings".tr(ref).toAllCapitalize(),
+              label: "settings".tr(ref).capitalizeAllFirstLetters(),
               isSelected: selectedItem == MenuItemType.settings,
               onTap: () async {
                 onMenuSelected?.call(MenuItemType.settings);
-                if (Responsive.isMobile(context)) {
+                if (Responsive.isMobileContext(context)) {
                   Navigator.pop(context);
                 }
               },
@@ -129,14 +127,14 @@ class SideMenu extends StatelessWidget {
           const Spacer(),
           // is case of Mobile handle bottom items
           Visibility(
-            visible: Responsive.isMobile(context),
+            visible: Responsive.isMobileContext(context),
             child: SideMenuItem(
               icon: assets.userProfileIcon,
               color: colors.white,
-              label: "logout".tr(ref).toAllCapitalize(),
+              label: "logout".tr(ref).capitalizeAllFirstLetters(),
               isSelected: selectedItem == MenuItemType.logout,
               onTap: () {
-                if (Responsive.isMobile(context)) {
+                if (Responsive.isMobileContext(context)) {
                   Navigator.pop(context);
                 }
                 onMenuSelected?.call(MenuItemType.logout);
@@ -145,7 +143,7 @@ class SideMenu extends StatelessWidget {
           ),
           // Refresh Icon
           Visibility(
-            visible: !Responsive.isMobile(context),
+            visible: !Responsive.isMobileContext(context),
             child: Column(
               children: [
                 GestureDetector(
@@ -164,14 +162,14 @@ class SideMenu extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: AppImage(
+                          child: UIImage(
                             assets.refreshIcon,
                             width: 22,
                             height: 22,
                           ),
                         ),
                         const SizedBox(height: 6),
-                        AppText(
+                        UIText(
                           "10\n${"minutes_short".tr(ref)}",
                           textAlign: TextAlign.center,
                           color: colors.white,
@@ -209,11 +207,9 @@ class SideMenu extends StatelessWidget {
   }
 
   void _showNotificationsSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('no_new_notifications'.tr(ref)),
-        duration: const Duration(seconds: 2),
-      ),
+    UISnackbar.showDefault(
+      context: context,
+      message: 'no_new_notifications'.tr(ref),
     );
   }
 }
@@ -241,7 +237,7 @@ class SideMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = Responsive.isMobile(context);
+    final isMobile = Responsive.isMobileContext(context);
 
     return GestureDetector(
       onTap: onTap,
@@ -263,7 +259,7 @@ class SideMenuItem extends StatelessWidget {
                   const SizedBox(width: 10),
                   _buildIcon(color),
                   const SizedBox(width: 10),
-                  AppText(
+                  UIText(
                     label,
                     textAlign: TextAlign.center,
                     color: color,
@@ -277,7 +273,7 @@ class SideMenuItem extends StatelessWidget {
                 children: [
                   _buildIcon(color),
                   const SizedBox(height: 6),
-                  AppText(
+                  UIText(
                     label,
                     textAlign: TextAlign.center,
                     size: 10,
@@ -296,7 +292,7 @@ class SideMenuItem extends StatelessWidget {
       child: Center(
         child: iconData != null
             ? Icon(iconData, size: _kIconSize, color: color)
-            : AppImage(
+            : UIImage(
                 icon!,
                 width: _kIconSize,
                 height: _kIconSize,

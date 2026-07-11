@@ -11,7 +11,7 @@ import 'package:metro_city_pulse/presentation/screens/dashboard/provider/dashboa
 import 'package:metro_city_pulse/presentation/screens/home/provider/menu_state_provider.dart';
 import 'package:metro_city_pulse/presentation/screens/maps/provider/map_state_provider.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_responsive_scope.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -19,7 +19,7 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppTheme theme = ref.watch(appThemeStateProvider);
-    final AppResponsive layout = AppResponsive.fromContext(context);
+    final Responsive layout = Responsive.of(context);
 
     final List<StatTileData> stats = ref.watch(dashboardStatsProvider);
     final Map<String, int> casesCounts = ref.watch(
@@ -135,7 +135,7 @@ class _StatsGrid extends ConsumerWidget {
       final StatTileData data = stats[i];
       return SummaryCard(
         theme: theme,
-        title: data.labelKey.tr(ref).toAllCapitalize(),
+        title: data.labelKey.tr(ref).capitalizeAllFirstLetters(),
         value: data.value,
         icon: data.icon,
         backgroundColor: data.backgroundColor,

@@ -1,10 +1,9 @@
 import 'package:metro_city_pulse/core/themes/app_theme.dart';
 import 'package:metro_city_pulse/domain/entities/map_marker_data.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_image_widget.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class MapTabBarWidget extends ConsumerWidget {
   final Function(FilterType) onPressed;
@@ -64,8 +63,8 @@ class MapTabBarWidget extends ConsumerWidget {
                           )
                         : BoxDecoration(),
                     child: Center(
-                      child: AppText(
-                        f.translationKey.tr(ref).toAllCapitalize(),
+                      child: UIText(
+                        f.translationKey.tr(ref).capitalizeAllFirstLetters(),
                         textAlign: TextAlign.center,
                         color: selected ? Colors.white : theme.colors.text,
                         size: 14,
@@ -86,7 +85,7 @@ class MapTabBarWidget extends ConsumerWidget {
                 ? theme.colors.unSelectedColor
                 : theme.colors.primaryColor,
             child: IconButton(
-              icon: AppImage(
+              icon: UIImage(
                 theme.assets.filterIcon,
                 width: 25,
                 height: 25,

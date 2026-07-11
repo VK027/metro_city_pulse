@@ -2,11 +2,10 @@ import 'package:metro_city_pulse/core/provider/theme/app_theme_provider.dart';
 import 'package:metro_city_pulse/presentation/screens/login/provider/auth_provider.dart';
 import 'package:metro_city_pulse/presentation/screens/login/provider/login_providers.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/buttons/app_elevated_button.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_form_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class ForgotPasswordScreen extends ConsumerWidget {
   const ForgotPasswordScreen({super.key});
@@ -20,34 +19,37 @@ class ForgotPasswordScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: theme.colors.background,
-      appBar: AppBar(title: Text("forgot_password".tr(ref).toAllCapitalize())),
+      appBar: UIAppBar(
+        title: "forgot_password".tr(ref).capitalizeAllFirstLetters(),
+        showBackButton: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppTextFormField(
-              label: "email".tr(ref).toAllCapitalize(),
-              hintText: "enter_your_email".tr(ref).toAllCapitalize(),
+            UITextFormField(
+              label: "email".tr(ref).capitalizeAllFirstLetters(),
+              hintText: "enter_your_email".tr(ref).capitalizeAllFirstLetters(),
               keyboardType: TextInputType.emailAddress,
               errorText: emailError,
               validator: (value) => value == null || value.isEmpty
-                  ? "email_required".tr(ref).toAllCapitalize()
+                  ? "email_required".tr(ref).capitalizeAllFirstLetters()
                   : !value.contains('@')
-                  ? "enter_valid_email".tr(ref).toAllCapitalize()
+                  ? "enter_valid_email".tr(ref).capitalizeAllFirstLetters()
                   : null,
               onChanged: (value) =>
                   ref.read(emailProvider.notifier).state = value,
             ),
             const SizedBox(height: 24),
             isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : AppElevatedButton(
-                    text: "send_reset_email".tr(ref).toAllCapitalize(),
+                ? const UILoadingIndicator()
+                : UIElevatedButton(
+                    text: "send_reset_email".tr(ref).capitalizeAllFirstLetters(),
                     onPressed: () async {
                       if (!isValidEmail(email)) {
                         ref.read(emailErrorProvider.notifier).state =
-                            "invalid_email".tr(ref).toAllCapitalize();
+                            "invalid_email".tr(ref).capitalizeAllFirstLetters();
                         return;
                       }
 
@@ -60,14 +62,12 @@ class ForgotPasswordScreen extends ConsumerWidget {
 
                       if (result == null) {
                         if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "reset_email_sent_successfully"
-                                  .tr(ref)
-                                  .toAllCapitalize(),
-                            ),
-                          ),
+                        UISnackbar.showDefault(
+                          context: context,
+                          message: "reset_email_sent_successfully"
+                              .tr(ref)
+                              .capitalizeAllFirstLetters(),
+                          type: UISnackbarType.success,
                         );
                         if (!context.mounted) return;
                         Navigator.pop(context);
@@ -75,7 +75,7 @@ class ForgotPasswordScreen extends ConsumerWidget {
                         if (!context.mounted) return;
                         showErrorDialog(
                           context,
-                          "reset_failed".tr(ref).toAllCapitalize(),
+                          "reset_failed".tr(ref).capitalizeAllFirstLetters(),
                           result,
                           okLabel: "ok".tr(ref).toUpperCase(),
                         );

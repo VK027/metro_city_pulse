@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metro_city_pulse/core/themes/app_theme.dart';
 import 'package:metro_city_pulse/domain/entities/map_data_entity.dart';
-import 'package:metro_city_pulse/presentation/utils/date_time_util.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_network_image.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_widget.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class AlertListItem extends ConsumerWidget {
   final MapDataEntity alert;
@@ -31,9 +29,9 @@ class AlertListItem extends ConsumerWidget {
       [alert.locationName, alert.locationAddress],
     );
     final String caseLabel = alert.status?.trim().isNotEmpty == true
-        ? alert.status!.trim().toAllCapitalize()
+        ? alert.status!.trim().capitalizeAllFirstLetters()
         : (alert.confidenceScore?.toString() ?? '--');
-    final String formattedDate = DateTimeUtil.getFormattedDateTime(
+    final String formattedDate = DateTimeUtil.getFormatDayMonthYearHourMinSec(
       alert.isoTimestamp,
       format: 'MMM dd yyyy h:mm:ss a',
     );
@@ -44,8 +42,8 @@ class AlertListItem extends ConsumerWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppNetworkImage(
-            url: alert.imageUrl,
+          UIImage(
+            alert.imageUrl ?? '',
             width: 120,
             height: 90,
             borderRadius: BorderRadius.circular(8),
@@ -55,7 +53,7 @@ class AlertListItem extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText(
+                UIText(
                   title,
                   size: 16,
                   fontWeight: FontWeight.bold,
@@ -64,7 +62,7 @@ class AlertListItem extends ConsumerWidget {
                 const SizedBox(height: 4),
                 RichText(
                   text: TextSpan(
-                    text: '${'camera'.tr(ref).toAllCapitalize()} : ',
+                    text: '${'camera'.tr(ref).capitalizeAllFirstLetters()} : ',
                     style: TextStyle(color: textColor),
                     children: [
                       TextSpan(
@@ -78,13 +76,13 @@ class AlertListItem extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                AppText(
-                  '${'location'.tr(ref).toAllCapitalize()}: $locationLabel',
+                UIText(
+                  '${'location'.tr(ref).capitalizeAllFirstLetters()}: $locationLabel',
                   color: textColor,
                 ),
                 const SizedBox(height: 4),
-                AppText(
-                  '${'cases'.tr(ref).toAllCapitalize()}: $caseLabel',
+                UIText(
+                  '${'cases'.tr(ref).capitalizeAllFirstLetters()}: $caseLabel',
                   color: textColor,
                 ),
               ],
@@ -93,14 +91,14 @@ class AlertListItem extends ConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              AppText(
+              UIText(
                 formattedDate,
                 size: 12,
                 color: Colors.grey.shade600,
                 textAlign: TextAlign.right,
               ),
               const SizedBox(height: 12),
-              AppText(
+              UIText(
                 '${'id_required'.tr(ref).replaceAll('*', '').trim().toUpperCase()} : ${alert.id ?? '--'}',
                 color: textColor,
                 fontWeight: FontWeight.w500,

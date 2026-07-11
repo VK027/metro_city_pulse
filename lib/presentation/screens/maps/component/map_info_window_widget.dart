@@ -1,5 +1,5 @@
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class MapInfoWindowWidget extends StatelessWidget {
   final String label;
@@ -45,7 +45,7 @@ class MapInfoWindowWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Expanded(
-                    child: AppText(
+                    child: UIText(
                       label,
                       size: 14,
                       fontWeight: FontWeight.w400,
@@ -69,19 +69,19 @@ class MapInfoWindowWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  AppText(
+                  UIText(
                     building,
                     size: 14,
                     fontWeight: FontWeight.w500,
                     color: Colors.black87
                   ),
-                  AppText(
+                  UIText(
                     alertId,
                     size: 14,
                     fontWeight: FontWeight.w400,
                     color: Colors.black87,
                   ),
-                  AppText(
+                  UIText(
                     timestamp,
                     size: 14,
                     fontWeight: FontWeight.w400,

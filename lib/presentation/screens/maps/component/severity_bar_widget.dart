@@ -1,6 +1,5 @@
-import 'package:metro_city_pulse/presentation/widgets/buttons/app_text_button.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class SeverityBarWidget extends StatelessWidget {
   final Function(int) onSelected;
@@ -38,7 +37,7 @@ class SeverityBarWidget extends StatelessWidget {
                     children: [
                       buildSeverityText(),
                       (selectedSeverityIndex != -1)
-                          ? AppTextButton(
+                          ? UITextButton(
                               text: 'Clear',
                               color: Colors.white,
                               onPressed: () => onSelected(-1),
@@ -98,7 +97,7 @@ class SeverityBarWidget extends StatelessWidget {
   }
 
   Widget buildSeverityText() {
-    return AppText(
+    return UIText(
       "Severities",
       color: Colors.white,
       size: 14,
@@ -149,7 +148,7 @@ class SeverityBarWidget extends StatelessWidget {
                       color: severity["color"] as Color,
                     ),
                     SizedBox(width: 6),
-                    AppText(
+                    UIText(
                       "${severity['label']} – ${severity['count']}"
                           .toUpperCase(),
                       size: isMobile ? 12 : 14,

@@ -15,8 +15,7 @@ import 'package:metro_city_pulse/presentation/screens/settings/page/settings_scr
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
 import 'package:metro_city_pulse/presentation/utils/map_utils.dart';
 import 'package:metro_city_pulse/presentation/utils/navigation_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_responsive_scope.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_widget.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart' hide NavigationUtil;
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -24,7 +23,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppTheme theme = ref.watch(appThemeStateProvider);
-    final AppResponsive layout = AppResponsive.fromContext(context);
+    final Responsive layout = Responsive.of(context);
 
     final int currentIndex = ref.watch(bottomNavIndexProvider) ?? 0;
     final bottomNavProvider = ref.read(bottomNavIndexProvider.notifier);
@@ -34,7 +33,8 @@ class HomeScreen extends ConsumerWidget {
 
     _syncMarkerIconSize(layout.size.width, ref);
 
-    return Scaffold(
+    return ResponsiveProvider(
+      child: Scaffold(
       drawer: layout.isMobile
           ? _buildDrawer(context, ref, theme, selectedMenuItem)
           : null,
@@ -89,6 +89,7 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
       ),
+    ),
     );
   }
 
@@ -212,8 +213,9 @@ class HomeScreen extends ConsumerWidget {
   }
 
   void _logoutFunction(BuildContext context, WidgetRef ref) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: AppText('logging_out'.tr(ref).toAllCapitalize())),
+    UISnackbar.showDefault(
+      context: context,
+      message: 'logging_out'.tr(ref).capitalizeAllFirstLetters(),
     );
     NavigationUtil.clearDataAndMoveToLogin(context, ref, 'side_menu');
   }

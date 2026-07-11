@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metro_city_pulse/core/provider/theme/app_theme_provider.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_card.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_empty_state.dart';
-import 'package:metro_city_pulse/presentation/widgets/components/card_top_container_widget.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class MapSection extends ConsumerWidget {
   final bool fillAvailableHeight;
@@ -20,19 +18,19 @@ class MapSection extends ConsumerWidget {
       appThemeStateProvider.select((t) => t.colors.primaryColor),
     );
 
-    final Widget placeholder = AppEmptyState(
+    final Widget placeholder = UIEmptyState(
       icon: Icons.map_outlined,
       message: 'mapFeatureComingSoon'.tr(ref),
       iconSize: 64,
       textSize: 20,
     );
 
-    return AppCard(
+    return UICard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          CardTopContainerWidget(
-            title: 'map_overview'.tr(ref).toAllCapitalize(),
+          UICardTopContainer(
+            title: 'map_overview'.tr(ref).capitalizeAllFirstLetters(),
             isViewAll: false,
             color: primaryColor,
             iconData: Icons.location_on_outlined,

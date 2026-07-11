@@ -1,4 +1,5 @@
 import 'package:metro_city_pulse/core/themes/app_theme.dart';
+import 'package:metro_city_pulse/core/themes/app_theme_mode.dart';
 import 'package:metro_city_pulse/domain/entities/map_marker_data.dart';
 import 'package:metro_city_pulse/presentation/screens/dashboard/component/app_bar_action_buttons.dart';
 import 'package:metro_city_pulse/presentation/screens/dashboard/component/responsive_date_range_selector.dart';
@@ -7,14 +8,9 @@ import 'package:metro_city_pulse/presentation/screens/home/provider/menu_state_p
 import 'package:metro_city_pulse/presentation/screens/maps/provider/map_state_provider.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
 import 'package:metro_city_pulse/presentation/utils/navigation_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/buttons/app_custom_outlined_button.dart';
-import 'package:metro_city_pulse/presentation/widgets/buttons/app_elevated_icon_button.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_image_widget.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_tab_bar_widget.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_widget.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_responsive_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart' hide NavigationUtil;
 
 class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
   static const double _kAppBarControlGap = 8;
@@ -49,7 +45,7 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AppResponsive layout = AppResponsive.fromContext(context);
+    final Responsive layout = Responsive.of(context);
     final bool isMobile = layout.isMobileOrSmallerTablet;
     final bool isTablet = layout.isTablet;
 
@@ -89,7 +85,7 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
             backgroundColor: theme.colors.primaryColor,
             child: IconButton(
               iconSize: _kDefaultIconSize - 6,
-              icon: AppImage(theme.assets.filterIcon, color: Colors.white),
+              icon: UIImage(theme.assets.filterIcon, color: Colors.white),
               onPressed: onFilterSelect,
             ),
           ),
@@ -164,8 +160,8 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   /// App bar title widget.
   Widget _buildAppBarTitle() {
-    return AppText(
-      title.toAllCapitalize(),
+    return UIText(
+      title.capitalizeAllFirstLetters(),
       color: Colors.white,
       fontWeight: FontWeight.w600,
     );
@@ -183,16 +179,15 @@ Widget buildTabBar(
   AppTheme theme,
   Map<String, int> casesCounts,
 ) {
-  return AppTabBarWidget(
-    theme: theme,
+  return UISegmentedTabBar(
     isWide: !(isMobile || isTablet),
-    listTabs: List.generate(TabBarType.values.length, (index) {
+    tabs: List.generate(TabBarType.values.length, (index) {
       final item = TabBarType.values[index];
-      return {
-        'label': item.statusKey.tr(ref).toAllCapitalize(),
-        'value': casesCounts[item.statusKey] ?? 0,
-        'isActive': selectedTab == item,
-      };
+      return UISegmentTabItem(
+        label: item.statusKey.tr(ref).capitalizeAllFirstLetters(),
+        value: '${casesCounts[item.statusKey] ?? 0}',
+        isActive: selectedTab == item,
+      );
     }),
     onTabPressed: (index) {
       switch (index) {
@@ -220,7 +215,7 @@ Widget buildDateRangeButton(bool isTablet, Function()? onDateRangePressed, {Colo
       borderColor: borderColor,
     ),
   );
-  // return AppCustomOutlinedButton(
+  // return UICustomOutlinedButton(
   //   label: isTablet ? "" : "28 Jun 25 - 10 Jul 25",
   //   icon: Icons.calendar_today,
   //   padding: isTablet ? EdgeInsets.zero : null,
@@ -233,7 +228,7 @@ Widget buildDateRangeButton(bool isTablet, Function()? onDateRangePressed, {Colo
 Widget buildClockButton(Function()? onClockPressed, AppTheme theme) {
   return SizedBox(
     height: 36,
-    child: AppCustomOutlinedButton(
+    child: UICustomOutlinedButton(
       icon: Icons.access_time,
       labelIcon: Icons.keyboard_arrow_down,
       label: '',
@@ -252,31 +247,57 @@ Widget buildLiveWidget(
   AppTheme theme,
   WidgetRef ref,
 ) {
+  final bool isDark = theme.mode == AppThemeMode.dark;
+  final Color liveBackgroundColor =
+      isDark ? theme.colors.surface : Colors.white;
+  final Color liveForegroundColor =
+      isDark ? theme.colors.white : theme.colors.secondaryColor;
+  const Color liveBorderColor = Colors.white38;
+
   if (isTablet) {
     return SizedBox(
       height: 36,
-      child: AppCustomOutlinedButton(
+      child: UICustomOutlinedButton(
         label: '',
         icon: Icons.wifi_tethering,
         padding: const EdgeInsets.symmetric(horizontal: 8),
         onPressed: onLivePressed,
-        backgroundColor: Colors.white,
-        foregroundColor: theme.colors.secondaryColor,
-        borderColor: Colors.white38,
+        backgroundColor: liveBackgroundColor,
+        foregroundColor: liveForegroundColor,
+        borderColor: liveBorderColor,
       ),
     );
   }
+
+  if (isDark) {
+    return SizedBox(
+      height: 36,
+      child: UICustomOutlinedButton(
+        label: 'live'.tr(ref).capitalizeAllFirstLetters(),
+        icon: Icons.wifi_tethering,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        onPressed: onLivePressed,
+        backgroundColor: liveBackgroundColor,
+        foregroundColor: liveForegroundColor,
+        borderColor: liveBorderColor,
+      ),
+    );
+  }
+
   return SizedBox(
     height: 36,
-    child: AppElevatedIconButton(
+    child: UIElevatedIconButton(
       onPressed: onLivePressed,
-      label: 'live'.tr(ref).toAllCapitalize(),
+      label: 'live'.tr(ref).capitalizeAllFirstLetters(),
       icon: Icons.wifi_tethering,
       backgroundColor: Colors.white,
       foregroundColor: theme.colors.secondaryColor,
       elevation: 0,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       radius: 20,
+      material: const UIMaterialButtonProps(
+        style: ButtonStyle(side: WidgetStatePropertyAll(BorderSide.none)),
+      ),
     ),
   );
 }

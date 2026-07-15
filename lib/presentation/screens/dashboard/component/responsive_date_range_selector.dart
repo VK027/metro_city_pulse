@@ -1,13 +1,10 @@
-import 'package:metro_city_pulse/presentation/utils/date_time_util.dart';
-import 'package:metro_city_pulse/presentation/utils/dialog_util.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/buttons/app_custom_outlined_button.dart';
 import 'package:metro_city_pulse/presentation/widgets/dialog/custom_date_range_picker.dart';
-import 'package:metro_city_pulse/presentation/widgets/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class ResponsiveDateRangeSelector extends ConsumerStatefulWidget {
   final bool isTablet;
@@ -32,10 +29,14 @@ class _ResponsiveDateRangeSelectorState
   PickerDateRange? _tempRange;
   final DateRangePickerController _datePickerController =
       DateRangePickerController();
-  String? _activeQuickOption; // tracks which quick option is highlighted
+  String? _activeQuickOption;
+
+  PickerDateRange _toPickerRange(DateTimeRange range) =>
+      PickerDateRange(range.start, range.end);
 
   void _setQuickRange(String type) {
-    final PickerDateRange range = DateTimeUtil.getDateRangeByType(type);
+    final PickerDateRange range =
+        _toPickerRange(DateTimeUtil.getDateRangeByType(type));
     setState(() {
       _tempRange = range;
       _datePickerController.selectedRange = range;
@@ -74,7 +75,7 @@ class _ResponsiveDateRangeSelectorState
       "last_quarter",
     ];
     for (final String opt in quickOptions) {
-      final qr = DateTimeUtil.getDateRangeByType(opt);
+      final qr = _toPickerRange(DateTimeUtil.getDateRangeByType(opt));
       if (_isSameRange(qr, range)) {
         return opt;
       }
@@ -123,7 +124,7 @@ class _ResponsiveDateRangeSelectorState
           ? desiredDy
           : (position.dy - popupHeight).clamp(screenPadding, maxAllowedDy);
 
-      result = await DialogUtil.showDateRangePopup<Map<String, dynamic>>(
+      result = await DialogUtil.showAnchoredPopup<Map<String, dynamic>>(
         context,
         position: Offset(dx.toDouble(), dy.toDouble()),
         child: CustomDateRangePicker(),
@@ -180,7 +181,9 @@ class _ResponsiveDateRangeSelectorState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    TextButton(
+                    UITextButton(
+                      text: "reset".tr(ref).capitalizeAllFirstLetters(),
+                      color: colorScheme.primary,
                       onPressed: () {
                         _onReset();
                         Navigator.pop(
@@ -188,10 +191,6 @@ class _ResponsiveDateRangeSelectorState
                           {"applied": true, "range": null},
                         );
                       },
-                      child: Text(
-                        "reset".tr(ref).toAllCapitalize(),
-                        style: TextStyle(color: colorScheme.primary),
-                      ),
                     ),
                     Row(
                       children: [
@@ -200,7 +199,9 @@ class _ResponsiveDateRangeSelectorState
                             context,
                             {"applied": false},
                           ),
-                          child: Text("cancel".tr(ref).toAllCapitalize()),
+                          child: Text(
+                            "cancel".tr(ref).capitalizeAllFirstLetters(),
+                          ),
                         ),
                         const SizedBox(width: 8),
                         ElevatedButton(
@@ -211,7 +212,9 @@ class _ResponsiveDateRangeSelectorState
                               "range": _tempRange ?? _selectedRange,
                             },
                           ),
-                          child: Text("apply".tr(ref).toAllCapitalize()),
+                          child: Text(
+                            "apply".tr(ref).capitalizeAllFirstLetters(),
+                          ),
                         ),
                       ],
                     ),
@@ -234,12 +237,12 @@ class _ResponsiveDateRangeSelectorState
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = Responsive.isMobile(context);
+    final isMobile = Responsive.isMobileContext(context);
     final colorScheme = Theme.of(context).colorScheme;
     final hasSelectedRange =
         _selectedRange?.startDate != null && _selectedRange?.endDate != null;
     final fgColor = widget.foregroundColor ?? colorScheme.primary;
-    return AppCustomOutlinedButton(
+    return UICustomOutlinedButton(
       label: isMobile ? "" : _formatRange(_selectedRange),
       icon: Icons.calendar_today,
       labelIcon: Icons.keyboard_arrow_down,

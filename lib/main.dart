@@ -7,7 +7,9 @@ import 'package:metro_city_pulse/core/themes/dark/app_theme_dark.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,23 +26,47 @@ class MainApp extends ConsumerWidget {
     final Locale? locale = ref.watch(languageProvider);
     final goRouter = ref.watch(goRouterProvider);
 
-    return MaterialApp.router(
-      routerConfig: goRouter,
-      // routerDelegate: goRouter.routerDelegate,
-      // routeInformationParser: goRouter.routeInformationParser,
-      // routeInformationProvider: goRouter.routeInformationProvider,
-      title: 'app_title'.tr(ref),
-      debugShowCheckedModeBanner: false,
-      theme: theme.themeData,
-      darkTheme: AppThemeDark().themeData,
-      themeMode: theme.mode == AppThemeMode.dark ? ThemeMode.dark : ThemeMode.light,
-      locale: locale,
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: supportedLocales,
+    return UIImageScope(
+      svgBuilder: (context, params) {
+        if (params.isAsset) {
+          return SvgPicture.asset(
+            params.source,
+            width: params.width,
+            height: params.height,
+            fit: params.fit,
+            colorFilter: params.colorFilter,
+            placeholderBuilder: params.placeholder == null
+                ? null
+                : (_) => params.placeholder!(),
+          );
+        }
+        return SvgPicture.network(
+          params.source,
+          width: params.width,
+          height: params.height,
+          fit: params.fit,
+          colorFilter: params.colorFilter,
+          placeholderBuilder: params.placeholder == null
+              ? null
+              : (_) => params.placeholder!(),
+        );
+      },
+      child: MaterialApp.router(
+        routerConfig: goRouter,
+        title: 'app_title'.tr(ref),
+        debugShowCheckedModeBanner: false,
+        theme: theme.themeData,
+        darkTheme: AppThemeDark().themeData,
+        themeMode:
+            theme.mode == AppThemeMode.dark ? ThemeMode.dark : ThemeMode.light,
+        locale: locale,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: supportedLocales,
+      ),
     );
   }
 }

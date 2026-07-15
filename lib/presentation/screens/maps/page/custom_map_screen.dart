@@ -10,12 +10,12 @@ import 'package:metro_city_pulse/presentation/screens/maps/component/severity_ba
 import 'package:metro_city_pulse/presentation/screens/maps/provider/map_state_provider.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
 import 'package:metro_city_pulse/presentation/utils/map_utils.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_responsive_scope.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_widget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'package:google_maps_cluster_manager_2/google_maps_cluster_manager_2.dart' as cm;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class CustomMapScreen extends ConsumerStatefulWidget {
   const CustomMapScreen({super.key});
@@ -25,12 +25,14 @@ class CustomMapScreen extends ConsumerStatefulWidget {
 }
 
 class _NewCustomMapScreenState extends ConsumerState<CustomMapScreen> {
+  /// Right-side gutter on mobile so the severity bar does not sit under FABs.
+  static const double _kMobileFabReserveWidth = 56;
+
   GoogleMapController? _mapController;
   LatLng? _selectedMarkerLatLng;
   MapMarkerData? _selectedMarker;
   bool _showCustomInfo = false;
   bool _showFilterOptions = false;
-  bool _isMapCreated = false;
   Size? mapSize;
   LatLngBounds? mapBounds;
   bool _showSeverityLegend = true;
@@ -39,9 +41,7 @@ class _NewCustomMapScreenState extends ConsumerState<CustomMapScreen> {
 
   @override
   void dispose() {
-    if (_isMapCreated) {
-      _mapController?.dispose();
-    }
+    _mapController = null;
     super.dispose();
   }
 
@@ -59,7 +59,7 @@ class _NewCustomMapScreenState extends ConsumerState<CustomMapScreen> {
     final tabBarProviderNotifier = ref.read(tabBarProvider.notifier);
     final TabBarType selectedTabItem = ref.watch(tabBarProvider);
 
-    final AppResponsive layout = AppResponsive.fromContext(context);
+    final Responsive layout = Responsive.of(context);
     final bool isMobileSmallerTablet = layout.isMobileOrSmallerTablet;
     final bool isTablet = layout.isTablet;
     final bool isMobile = layout.isMobile;
@@ -244,7 +244,6 @@ class _NewCustomMapScreenState extends ConsumerState<CustomMapScreen> {
                   _mapController = controller;
                   //_clusterManager?.setMapId(controller.mapId);
                   mapBounds = await _mapController?.getVisibleRegion();
-                  _isMapCreated = true;
                   if (_showCustomInfo) {
                     setState(() {});
                   }
@@ -263,14 +262,14 @@ class _NewCustomMapScreenState extends ConsumerState<CustomMapScreen> {
                 tiltGesturesEnabled: false, // Optional: Disable tilt
                 zoomGesturesEnabled: true, // Or allow pinch zoom
                 scrollGesturesEnabled: true, // Disable panning
-                liteModeEnabled: true,
+                liteModeEnabled: !kIsWeb,
                 onTap: (LatLng pos) => setState(() => _showCustomInfo = false),
               ),
             );
           },
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const UILoadingIndicator(),
       error: (e, st) => _buildErrorWidget(e),
     );
   }
@@ -375,7 +374,7 @@ class _NewCustomMapScreenState extends ConsumerState<CustomMapScreen> {
         ? Positioned(
             bottom: isMobile ? 8 : 18,
             left: isMobile ? 8 : null,
-            right: isMobile ? kBottomNavigationBarHeight : null,
+            right: isMobile ? _kMobileFabReserveWidth : null,
             child: SeverityBarWidget(
               onSelected: (index) =>
                   ref.read(selectedSeverityProvider.notifier).state = index,
@@ -431,9 +430,9 @@ class _NewCustomMapScreenState extends ConsumerState<CustomMapScreen> {
           padding: const EdgeInsets.all(12.0),
           child: Column(
             children: [
-              AppText(
-                'details'.tr(ref).toAllCapitalize(),
-                style: TextStyle(fontWeight: FontWeight.bold),
+              UIText(
+                'details'.tr(ref).capitalizeAllFirstLetters(),
+                fontWeight: FontWeight.bold,
               ),
               const SizedBox(height: 8),
               Expanded(
@@ -483,11 +482,11 @@ class _NewCustomMapScreenState extends ConsumerState<CustomMapScreen> {
               Icons.location_on,
               color: isSelected ? theme.colors.primaryColor : theme.colors.gray,
             ),
-            title: AppText(
+            title: UIText(
               m.title,
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
             ),
-            subtitle: AppText(
+            subtitle: UIText(
               '${m.filterType.toString().split('.').last} — S${m.severity}',
               color: isSelected
                   ? theme.colors.primaryColor
@@ -514,15 +513,16 @@ class _NewCustomMapScreenState extends ConsumerState<CustomMapScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          AppText('failed_to_load_markers'.tr(ref).toAllCapitalize()),
+          UIText('failed_to_load_markers'.tr(ref).capitalizeAllFirstLetters()),
           const SizedBox(height: 8),
-          ElevatedButton(
+          UIElevatedButton(
             onPressed: _resetFilters,
-            child: AppText('retry'.tr(ref).toAllCapitalize()),
+            isFullWidth: false,
+            child: UIText('retry'.tr(ref).capitalizeAllFirstLetters()),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: AppText(
+            child: UIText(
               e.toString(),
               size: 12.0,
               textAlign: TextAlign.center,

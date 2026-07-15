@@ -3,8 +3,8 @@ import 'package:metro_city_pulse/domain/entities/map_data_entity.dart';
 import 'package:metro_city_pulse/domain/entities/map_marker_data.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
-import 'package:metro_city_pulse/presentation/widgets/responsive.dart';
 
 const double markerWidthMobile = 40;
 const double markerWidthTablet = 48;
@@ -12,6 +12,8 @@ const double markerWidthDesktop = 55;
 const double infoWindowWidth = 180;
 
 class MapUtils {
+  static final Map<String, Map<FilterType, BitmapDescriptor>> _iconCache = {};
+
   static double markerSizeForScreenWidth(double width) {
     if (width <= mobileWidth) return markerWidthMobile;
     if (width >= desktopWidth) return markerWidthDesktop;
@@ -86,7 +88,12 @@ class MapUtils {
     AppAssets assets, {
     required Size markerSize,
   }) async {
-    return {
+    final String cacheKey = '${markerSize.width}x${markerSize.height}';
+    if (_iconCache.containsKey(cacheKey)) {
+      return _iconCache[cacheKey]!;
+    }
+
+    final icons = {
       FilterType.traffic: await BitmapDescriptor.asset(
         ImageConfiguration(size: markerSize),
         assets.vehicleIcon,
@@ -104,6 +111,9 @@ class MapUtils {
         assets.publicGroupIcon,
       ),
     };
+
+    _iconCache[cacheKey] = icons;
+    return icons;
   }
 
   static const initialCameraPosition = CameraPosition(

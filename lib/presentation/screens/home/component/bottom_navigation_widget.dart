@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metro_city_pulse/core/themes/app_theme.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_image_widget.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class BottomNavigationWidget extends ConsumerWidget {
   static const double _iconSize = 20.0;
@@ -26,7 +26,7 @@ class BottomNavigationWidget extends ConsumerWidget {
 
     // Build once per rebuild; the same icon path with a different color tint.
     Widget icon(String path, int index) {
-      return AppImage(
+      return UIImage(
         path,
         color: index == activeIndex ? selectedColor : unselectedColor,
         width: _iconSize,
@@ -46,19 +46,19 @@ class BottomNavigationWidget extends ConsumerWidget {
       items: [
         BottomNavigationBarItem(
           icon: icon(theme.assets.dashboardIcon, 0),
-          label: 'dashboard'.tr(ref).toAllCapitalize(),
+          label: 'dashboard'.tr(ref).capitalizeAllFirstLetters(),
         ),
         BottomNavigationBarItem(
           icon: icon(theme.assets.statsIcon, 1),
-          label: 'stats'.tr(ref).toAllCapitalize(),
+          label: 'stats'.tr(ref).capitalizeAllFirstLetters(),
         ),
         BottomNavigationBarItem(
           icon: icon(theme.assets.alertsIcon, 2),
-          label: 'alerts'.tr(ref).toAllCapitalize(),
+          label: 'alerts'.tr(ref).capitalizeAllFirstLetters(),
         ),
         BottomNavigationBarItem(
           icon: icon(theme.assets.chatbotIcon, 3),
-          label: 'chat_ai'.tr(ref).toAllCapitalize(),
+          label: 'chat_ai'.tr(ref).capitalizeAllFirstLetters(),
         ),
       ],
       currentIndex: activeIndex < 0 ? 0 : activeIndex,

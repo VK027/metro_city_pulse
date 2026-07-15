@@ -1,8 +1,8 @@
 import 'package:metro_city_pulse/core/provider/repository/repository_provider.dart';
-import 'package:metro_city_pulse/core/utils/translation_util.dart';
 import 'package:metro_city_pulse/domain/repositories/local/local_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 
 const Locale defaultLocale = Locale("en");
@@ -14,8 +14,7 @@ const supportedLocales = [
 
 final translationsProvider = Provider<Translations>((ref) {
   final locale = ref.watch(languageProvider);
-  final map = TranslationCache.get(locale?.languageCode ?? 'en');
-  return Translations(map);
+  return TranslationCache.translationsFor(locale?.languageCode ?? 'en');
 });
 
 final languageProvider = StateNotifierProvider<LanguageNotifier, Locale?>((ref) {

@@ -1,7 +1,6 @@
 import 'package:metro_city_pulse/core/themes/app_theme.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_image_widget.dart';
-import 'package:metro_city_pulse/presentation/widgets/responsive.dart';
 import 'package:flutter/material.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class MapZoomControlWidget extends StatelessWidget {
   final VoidCallback? onLocationPressed;
@@ -22,91 +21,91 @@ class MapZoomControlWidget extends StatelessWidget {
 
   final AppTheme theme;
 
+  ShapeBorder _controlShape(BorderRadius borderRadius) {
+    return RoundedRectangleBorder(
+      borderRadius: borderRadius,
+      side: BorderSide(
+        color: theme.colors.lightGray.withValues(alpha: 0.35),
+      ),
+    );
+  }
+
+  Widget _buildControlButton({
+    required String heroTag,
+    required String iconAsset,
+    required VoidCallback? onPressed,
+    required ShapeBorder shape,
+  }) {
+    return FloatingActionButton(
+      mini: true,
+      backgroundColor: theme.colors.surface,
+      foregroundColor: theme.colors.primaryColor,
+      elevation: 2,
+      heroTag: heroTag,
+      onPressed: onPressed,
+      shape: shape,
+      child: UIImage(
+        iconAsset,
+        width: 24,
+        height: 24,
+        color: theme.colors.primaryColor,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    double iconSize = 24.0;
+    final bool isMobile = Responsive.isMobileContext(context);
 
     return Column(
       children: [
-        if(Responsive.isMobile(context))
-          FloatingActionButton(
-            mini: true,
-            backgroundColor: theme.colors.surface,
-            heroTag: "exclamation_all",
+        if (isMobile) ...[
+          _buildControlButton(
+            heroTag: 'exclamation_all',
+            iconAsset: theme.assets.exclamationIcon,
             onPressed: onExclamationPressed,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: AppImage(
-              theme.assets.exclamationIcon,
-              width: iconSize,
-              height: iconSize,
-            ),
+            shape: _controlShape(BorderRadius.circular(8)),
           ),
-        if(Responsive.isMobile(context))
-        SizedBox(height: 6),
-        if(Responsive.isMobile(context))
-        FloatingActionButton(
-          mini: true,
-          backgroundColor: theme.colors.surface,
-          heroTag: "reset_all",
-          onPressed: onResetPressed,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
+          const SizedBox(height: 6),
+          _buildControlButton(
+            heroTag: 'reset_all',
+            iconAsset: theme.assets.resetIcon,
+            onPressed: onResetPressed,
+            shape: _controlShape(BorderRadius.circular(8)),
           ),
-          child: AppImage(
-            theme.assets.resetIcon,
-            width: iconSize,
-            height: iconSize,
-          ),
-        ),
-        if(Responsive.isMobile(context))
-        SizedBox(height: 6),
-        FloatingActionButton(
-          mini: true,
-          backgroundColor: theme.colors.surface,
-          heroTag: "center_location",
+          const SizedBox(height: 6),
+        ],
+        _buildControlButton(
+          heroTag: 'center_location',
+          iconAsset: theme.assets.locationIcon,
           onPressed: onLocationPressed,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: AppImage(
-            theme.assets.locationIcon,
-            width: iconSize,
-            height: iconSize,
-          ),
+          shape: _controlShape(BorderRadius.circular(8)),
         ),
-        SizedBox(height: 8),
-        if(!Responsive.isMobile(context))
-        FloatingActionButton(
-          mini: true,
-          backgroundColor: theme.colors.surface,
-          heroTag: "zoom_in",
-          onPressed: onZoomInPressed,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(8.0), topRight:  Radius.circular(8.0)),
+        const SizedBox(height: 8),
+        if (!isMobile) ...[
+          _buildControlButton(
+            heroTag: 'zoom_in',
+            iconAsset: theme.assets.zoomInIcon,
+            onPressed: onZoomInPressed,
+            shape: _controlShape(
+              const BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+            ),
           ),
-          child: AppImage(
-            theme.assets.zoomInIcon,
-            width: iconSize,
-            height: iconSize,
+          _buildControlButton(
+            heroTag: 'zoom_out',
+            iconAsset: theme.assets.zoomOutIcon,
+            onPressed: onZoomOutPressed,
+            shape: _controlShape(
+              const BorderRadius.only(
+                bottomLeft: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
+            ),
           ),
-        ),
-        if(!Responsive.isMobile(context))
-        FloatingActionButton(
-          mini: true,
-          backgroundColor: theme.colors.surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8.0), bottomRight:  Radius.circular(8.0)),
-          ),
-          heroTag: "zoom_out",
-          onPressed: onZoomOutPressed,
-          child: AppImage(
-            theme.assets.zoomOutIcon,
-            width: iconSize,
-            height: iconSize,
-          ),
-        ),
+        ],
       ],
     );
   }

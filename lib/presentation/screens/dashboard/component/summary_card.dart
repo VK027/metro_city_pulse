@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:metro_city_pulse/core/themes/app_theme.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_card.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_widget.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class SummaryCard extends StatelessWidget {
   final AppTheme theme;
@@ -26,16 +24,15 @@ class SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconColorFilter = ColorFilter.mode(backgroundColor, BlendMode.srcIn);
     final Color textColor = theme.colors.text;
 
-    return AppCard(
+    return UICard(
       color: theme.colors.surface,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppText(
+          UIText(
             title,
             maxLines: 1,
             textOverflow: TextOverflow.ellipsis,
@@ -53,7 +50,7 @@ class SummaryCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppText(
+                    UIText(
                       value,
                       maxLines: 1,
                       textOverflow: TextOverflow.ellipsis,
@@ -74,11 +71,11 @@ class SummaryCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               RepaintBoundary(
-                child: SvgPicture.asset(
+                child: UIImage(
                   icon,
                   width: 30,
                   height: 30,
-                  colorFilter: iconColorFilter,
+                  color: backgroundColor,
                 ),
               ),
             ],

@@ -5,9 +5,7 @@ import 'package:metro_city_pulse/presentation/screens/dashboard/component/alert_
 import 'package:metro_city_pulse/presentation/screens/dashboard/provider/dashboard_stats_provider.dart';
 import 'package:metro_city_pulse/presentation/screens/home/provider/menu_state_provider.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_card.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_widget.dart';
-import 'package:metro_city_pulse/presentation/widgets/components/card_top_container_widget.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class RecentAlertsSection extends ConsumerWidget {
   final AppTheme theme;
@@ -26,7 +24,7 @@ class RecentAlertsSection extends ConsumerWidget {
 
     final Widget alertsList = alerts.isEmpty
         ? Center(
-            child: AppText(
+            child: UIText(
               'select_alert_to_view_details'.tr(ref),
               color: Colors.grey.shade600,
               textAlign: TextAlign.center,
@@ -50,7 +48,7 @@ class RecentAlertsSection extends ConsumerWidget {
             ),
           );
 
-    return AppCard(
+    return UICard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -59,9 +57,10 @@ class RecentAlertsSection extends ConsumerWidget {
               ref.read(menuProvider.notifier).state = MenuItemType.alerts;
               ref.read(bottomNavIndexProvider.notifier).state = 1;
             },
-            child: CardTopContainerWidget(
-              title: 'recentAlerts'.tr(ref).toAllCapitalize(),
+            child: UICardTopContainer(
+              title: 'recentAlerts'.tr(ref).capitalizeAllFirstLetters(),
               isViewAll: true,
+              viewAllLabel: 'viewAll'.tr(ref),
               color: theme.colors.primaryColor,
               iconData: Icons.refresh,
             ),

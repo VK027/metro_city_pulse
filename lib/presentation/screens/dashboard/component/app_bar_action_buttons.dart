@@ -2,9 +2,9 @@ import 'package:metro_city_pulse/core/provider/language_provider.dart';
 import 'package:metro_city_pulse/core/provider/theme/app_theme_provider.dart';
 import 'package:metro_city_pulse/core/themes/app_theme.dart';
 import 'package:metro_city_pulse/core/themes/app_theme_mode.dart';
-import 'package:metro_city_pulse/presentation/widgets/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class AppBarActionButtons extends ConsumerWidget {
   static const double _kControlHeight = 36;
@@ -16,7 +16,7 @@ class AppBarActionButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isMobile = Responsive.isMobile(context);
+    final isMobile = Responsive.isMobileContext(context);
     final isDark = theme.mode == AppThemeMode.dark;
     final locale = ref.watch(languageProvider);
     final langCode = (locale?.languageCode ?? 'en').toUpperCase();
@@ -97,13 +97,11 @@ class _LanguageSelectorButton extends StatelessWidget {
               color: theme.colors.text,
             ),
             const SizedBox(width: 4),
-            Text(
+            UIText(
               langCode,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: theme.colors.text,
-              ),
+              size: 12,
+              fontWeight: FontWeight.w600,
+              color: theme.colors.text,
             ),
           ],
         ),
@@ -124,13 +122,11 @@ class _LanguageSelectorButton extends StatelessWidget {
             color: isSelected ? theme.colors.primaryColor : theme.colors.gray,
           ),
           const SizedBox(width: 8),
-          Text(
+          UIText(
             label,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              color: theme.colors.text,
-            ),
+            size: 14,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+            color: theme.colors.text,
           ),
         ],
       ),

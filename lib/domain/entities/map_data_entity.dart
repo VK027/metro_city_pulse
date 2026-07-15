@@ -1,5 +1,5 @@
-import 'package:metro_city_pulse/core/helpers/json_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:vvk_ui_kit/core.dart';
 
 part 'map_data_entity.g.dart';
 

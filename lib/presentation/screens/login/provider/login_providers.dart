@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 // Email and Password state
 final emailProvider = StateProvider<String>((ref) => '');
@@ -31,7 +32,7 @@ bool validateInputs(WidgetRef ref) {
   if (!isValidEmail(email)) {
     ref.read(emailErrorProvider.notifier).state = "invalid_email"
         .tr(ref)
-        .toAllCapitalize();
+        .capitalizeAllFirstLetters();
     isValid = false;
   } else {
     ref.read(emailErrorProvider.notifier).state = null;
@@ -40,7 +41,7 @@ bool validateInputs(WidgetRef ref) {
   if (password.length < 6) {
     ref.read(passwordErrorProvider.notifier).state = "min_6_characters"
         .tr(ref)
-        .toAllCapitalize();
+        .capitalizeAllFirstLetters();
     isValid = false;
   } else {
     ref.read(passwordErrorProvider.notifier).state = null;
@@ -55,17 +56,10 @@ void showErrorDialog(
   String message, {
   String okLabel = "OK",
 }) {
-  showDialog(
-    context: context,
-    builder: (_) => AlertDialog(
-      title: Text(title),
-      content: Text(message),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(okLabel),
-        ),
-      ],
-    ),
+  UIAlertDialog.show(
+    context,
+    title: title,
+    message: message,
+    confirmLabel: okLabel,
   );
 }

@@ -8,10 +8,8 @@ import 'package:metro_city_pulse/presentation/screens/alerts/provider/alerts_sta
 import 'package:metro_city_pulse/presentation/screens/dashboard/component/responsive_date_range_selector.dart';
 import 'package:metro_city_pulse/presentation/screens/maps/provider/map_state_provider.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_responsive_scope.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_tab_bar_widget.dart';
-import 'package:metro_city_pulse/presentation/widgets/common/app_text_widget.dart';
 import 'package:video_player/video_player.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class AlertsScreen extends ConsumerWidget {
   const AlertsScreen({super.key});
@@ -19,7 +17,7 @@ class AlertsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(appThemeStateProvider);
-    final AppResponsive layout = AppResponsive.fromContext(context);
+    final Responsive layout = Responsive.of(context);
 
     return Scaffold(
       appBar: null,
@@ -78,22 +76,22 @@ class _LeftPanel extends ConsumerWidget {
     final StateController<TabBarType> selectedTabNotifier =
         ref.read(selectedAlertTabProvider.notifier);
 
-    final List<Map<String, dynamic>> tabs = [
-      {
-        'label': 'new'.tr(ref).toAllCapitalize(),
-        'value': apiTabCounts['new'] ?? 0,
-        'isActive': selectedTab == TabBarType.newTab,
-      },
-      {
-        'label': 'dispatch'.tr(ref).toAllCapitalize(),
-        'value': apiTabCounts['dispatch'] ?? 0,
-        'isActive': selectedTab == TabBarType.dispatch,
-      },
-      {
-        'label': 'cases'.tr(ref).toAllCapitalize(),
-        'value': apiTabCounts['cases'] ?? 0,
-        'isActive': selectedTab == TabBarType.cases,
-      },
+    final List<UISegmentTabItem> tabs = [
+      UISegmentTabItem(
+        label: 'new'.tr(ref).capitalizeAllFirstLetters(),
+        value: '${apiTabCounts['new'] ?? 0}',
+        isActive: selectedTab == TabBarType.newTab,
+      ),
+      UISegmentTabItem(
+        label: 'dispatch'.tr(ref).capitalizeAllFirstLetters(),
+        value: '${apiTabCounts['dispatch'] ?? 0}',
+        isActive: selectedTab == TabBarType.dispatch,
+      ),
+      UISegmentTabItem(
+        label: 'cases'.tr(ref).capitalizeAllFirstLetters(),
+        value: '${apiTabCounts['cases'] ?? 0}',
+        isActive: selectedTab == TabBarType.cases,
+      ),
     ];
     void onTabPressed(int index) {
       switch (index) {
@@ -121,10 +119,9 @@ class _LeftPanel extends ConsumerWidget {
                 ? Row(
                     children: [
                       Expanded(
-                        child: AppTabBarWidget(
-                          theme: theme,
+                        child: UISegmentedTabBar(
                           isWide: false,
-                          listTabs: tabs,
+                          tabs: tabs,
                           onTabPressed: onTabPressed,
                         ),
                       ),
@@ -133,10 +130,9 @@ class _LeftPanel extends ConsumerWidget {
                     ],
                   )
                 : Center(
-                    child: AppTabBarWidget(
-                      theme: theme,
+                    child: UISegmentedTabBar(
                       isWide: true,
-                      listTabs: tabs,
+                      tabs: tabs,
                       onTabPressed: onTabPressed,
                     ),
                   ),
@@ -180,8 +176,8 @@ class _AlertsFilterBlock extends ConsumerWidget {
     final Widget confidenceRow = Row(
       children: [
         Expanded(
-          child: AppText(
-            'confidence_score'.tr(ref).toAllCapitalize(),
+          child: UIText(
+            'confidence_score'.tr(ref).capitalizeAllFirstLetters(),
           ),
         ),
         Container(
@@ -190,7 +186,7 @@ class _AlertsFilterBlock extends ConsumerWidget {
             color: themeData.colorScheme.primary.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: AppText(
+          child: UIText(
             '>= ${confidenceScore.toInt()}',
             color: themeData.colorScheme.primary,
             fontWeight: FontWeight.w600,
@@ -200,7 +196,7 @@ class _AlertsFilterBlock extends ConsumerWidget {
       ],
     );
 
-    final Widget slider = Slider(
+    final Widget slider = UISlider(
       value: confidenceScore,
       min: 0,
       max: 100,
@@ -224,8 +220,8 @@ class _AlertsFilterBlock extends ConsumerWidget {
         Row(
           children: [
             Expanded(
-              child: AppText(
-                'select_date_range'.tr(ref).toAllCapitalize(),
+              child: UIText(
+                'select_date_range'.tr(ref).capitalizeAllFirstLetters(),
               ),
             ),
             const ResponsiveDateRangeSelector(),
@@ -282,19 +278,19 @@ class _AlertList extends ConsumerWidget {
           final DateTime reportedAt = _parseReportedTime(alert.isoTimestamp);
           return ListTile(
             leading: const CircleAvatar(child: Icon(Icons.camera_alt)),
-            title: AppText(title, fontWeight: FontWeight.bold),
+            title: UIText(title, fontWeight: FontWeight.bold),
             selected: isSelected,
             selectedTileColor:
                 Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
-            subtitle: Text(
-              '${'camera'.tr(ref).toAllCapitalize()}: $camera\n'
-              '${'location'.tr(ref).toAllCapitalize()}: $location',
+            subtitle: UIText(
+              '${'camera'.tr(ref).capitalizeAllFirstLetters()}: $camera\n'
+              '${'location'.tr(ref).capitalizeAllFirstLetters()}: $location',
             ),
             isThreeLine: true,
-            trailing: Text(
+            trailing: UIText(
               '${reportedAt.month}/${reportedAt.day}/${reportedAt.year}\n'
               '${reportedAt.hour}:${reportedAt.minute.toString().padLeft(2, '0')}',
-              style: const TextStyle(fontSize: 12),
+              size: 12,
               textAlign: TextAlign.right,
             ),
             onTap: () {
@@ -390,22 +386,21 @@ class _RightPanelState extends ConsumerState<_RightPanel> {
                           child: VideoPlayer(_controller!),
                         )
                       : imageUrl != null
-                          ? Image.network(
+                          ? UIImage(
                               imageUrl,
+                              isAsset: false,
+                              width: double.infinity,
                               fit: BoxFit.cover,
-                              gaplessPlayback: true,
-                              filterQuality: FilterQuality.medium,
-                              errorBuilder: (_, _, _) => _NoEvidencePlaceholder(),
+                              fallback: _NoEvidencePlaceholder(),
                             )
                           : SizedBox(
                               height: 220,
                               child: Center(
                                 child: videoUrl != null && _isVideoInitializing
-                                    ? const CircularProgressIndicator()
-                                    : const Text(
+                                    ? const UILoadingIndicator()
+                                    : const UIText(
                                         'No evidence available',
-                                        style:
-                                            TextStyle(color: Colors.white70),
+                                        color: Colors.white70,
                                       ),
                               ),
                             ),
@@ -416,43 +411,46 @@ class _RightPanelState extends ConsumerState<_RightPanel> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              ElevatedButton.icon(
-                icon: const Icon(Icons.work),
-                label: Text('create_case'.tr(ref).toAllCapitalize()),
+              UIElevatedIconButton(
+                icon: Icons.work,
+                label: 'create_case'.tr(ref).capitalizeAllFirstLetters(),
+                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 onPressed: () {},
               ),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.feedback),
-                label: Text('feedback'.tr(ref).toAllCapitalize()),
+              UIElevatedIconButton(
+                icon: Icons.feedback,
+                label: 'feedback'.tr(ref).capitalizeAllFirstLetters(),
+                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 onPressed: () {},
               ),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.sos, color: Colors.white),
-                label: Text('sos'.tr(ref).toUpperCase()),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              UIElevatedIconButton(
+                icon: Icons.sos,
+                label: 'sos'.tr(ref).toUpperCase(),
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.red,
                 onPressed: () {},
               ),
-              OutlinedButton.icon(
-                icon: const Icon(Icons.close),
-                label: Text('ignore'.tr(ref).toAllCapitalize()),
+              UICustomOutlinedButton(
+                icon: Icons.close,
+                label: 'ignore'.tr(ref).capitalizeAllFirstLetters(),
                 onPressed: () {},
               ),
             ],
           ),
           const SizedBox(height: 12),
           if (selectedAlert != null) ...[
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+            UICard(
+              borderRadius: 12,
               child: ListTile(
                 leading: const Icon(Icons.security, size: 36),
-                title: Text(
+                title: UIText(
                   selectedAlert.type?.trim().isNotEmpty == true
                       ? selectedAlert.type!.trim()
                       : 'Alert',
                 ),
-                subtitle: Text(
+                subtitle: UIText(
                   selectedAlert.isoTimestamp ??
                       _parseReportedTime(selectedAlert.isoTimestamp)
                           .toIso8601String(),
@@ -467,8 +465,8 @@ class _RightPanelState extends ConsumerState<_RightPanel> {
                         .withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text(
-                    '${'confidence'.tr(ref).toAllCapitalize()} '
+                  child: UIText(
+                    '${'confidence'.tr(ref).capitalizeAllFirstLetters()} '
                     '${selectedAlert.confidenceScore ?? 0}%',
                   ),
                 ),
@@ -479,9 +477,9 @@ class _RightPanelState extends ConsumerState<_RightPanel> {
               child: _AlertDetailsPanel(alert: selectedAlert, ref: ref),
             ),
           ] else
-            Text(
-              'select_alert_to_view_details'.tr(ref).toAllCapitalize(),
-              style: const TextStyle(color: Colors.grey),
+            UIText(
+              'select_alert_to_view_details'.tr(ref).capitalizeAllFirstLetters(),
+              color: Colors.grey,
             ),
         ],
       ),
@@ -505,9 +503,9 @@ class _AlertDetailsPanel extends StatelessWidget {
     final ThemeData themeData = Theme.of(context);
     final List<MapEntry<String, String>> details = <MapEntry<String, String>>[
       MapEntry('ID', _value(alert.id)),
-      MapEntry('type'.tr(ref).toAllCapitalize(), _value(alert.type)),
-      MapEntry('camera'.tr(ref).toAllCapitalize(), _value(alert.cameraName)),
-      MapEntry('location'.tr(ref).toAllCapitalize(), _value(alert.locationName)),
+      MapEntry('type'.tr(ref).capitalizeAllFirstLetters(), _value(alert.type)),
+      MapEntry('camera'.tr(ref).capitalizeAllFirstLetters(), _value(alert.cameraName)),
+      MapEntry('location'.tr(ref).capitalizeAllFirstLetters(), _value(alert.locationName)),
       MapEntry('Address', _value(alert.locationAddress)),
       MapEntry('Location Type', _value(alert.locationType)),
       MapEntry(
@@ -522,10 +520,10 @@ class _AlertDetailsPanel extends StatelessWidget {
       MapEntry('Time', _value(alert.time)),
       MapEntry('Timestamp', _value(alert.isoTimestamp)),
       MapEntry(
-        'confidence'.tr(ref).toAllCapitalize(),
+        'confidence'.tr(ref).capitalizeAllFirstLetters(),
         '${alert.confidenceScore ?? 0}%',
       ),
-      MapEntry('Status', _value(alert.status).toAllCapitalize()),
+      MapEntry('Status', _value(alert.status).capitalizeAllFirstLetters()),
       MapEntry('Severity', _value(alert.severity)),
       MapEntry('Live', alert.isLive == true ? 'Yes' : 'No'),
       MapEntry('Vehicle No', _value(alert.vehicleNo)),
@@ -551,20 +549,16 @@ class _AlertDetailsPanel extends StatelessWidget {
             children: [
               SizedBox(
                 width: 130,
-                child: Text(
+                child: UIText(
                   entry.key,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: themeData.colorScheme.onSurface
-                        .withValues(alpha: 0.7),
-                  ),
+                  fontWeight: FontWeight.w600,
+                  color: themeData.colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
               Expanded(
-                child: Text(
+                child: UIText(
                   entry.value,
-                  style:
-                      TextStyle(color: themeData.colorScheme.onSurface),
+                  color: themeData.colorScheme.onSurface,
                 ),
               ),
             ],
@@ -596,9 +590,9 @@ class _NoEvidencePlaceholder extends StatelessWidget {
         children: [
           Icon(Icons.videocam_off_outlined, color: Colors.white54, size: 48),
           SizedBox(height: 8),
-          Text(
+          UIText(
             'No evidence available',
-            style: TextStyle(color: Colors.white70),
+            color: Colors.white70,
           ),
         ],
       ),

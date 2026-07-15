@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metro_city_pulse/presentation/utils/localization_util.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:vvk_ui_kit/vvk_ui_kit.dart';
 
 class CustomDateRangePicker extends ConsumerStatefulWidget {
   const CustomDateRangePicker({super.key});
@@ -17,15 +18,6 @@ class _CustomDateRangePickerState extends ConsumerState<CustomDateRangePicker> {
   int _pickerResetVersion = 0;
   final DateRangePickerController _datePickerController =
       DateRangePickerController();
-
-  // void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
-  //   if (args.value is PickerDateRange) {
-  //     setState(() {
-  //       _selectedRange = args.value;
-  //       //_activeQuickOption = null; // clear quick option when manual pick
-  //     });
-  //   }
-  // }
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     if (args.value is PickerDateRange) {
@@ -114,7 +106,13 @@ class _CustomDateRangePickerState extends ConsumerState<CustomDateRangePicker> {
                 const Spacer(),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: TextButton(
+                  child: UITextButton(
+                    text: "reset".tr(ref).capitalizeAllFirstLetters(),
+                    style: TextStyle(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                      decoration: TextDecoration.underline,
+                    ),
                     onPressed: () {
                       _resetSelection();
                       Navigator.pop(
@@ -122,19 +120,6 @@ class _CustomDateRangePickerState extends ConsumerState<CustomDateRangePicker> {
                         {"applied": true, "range": null},
                       );
                     },
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(0, 0),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: Text(
-                      "reset".tr(ref).toAllCapitalize(),
-                      style: TextStyle(
-                        color: colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
                   ),
                 ),
               ],
@@ -196,7 +181,7 @@ class _CustomDateRangePickerState extends ConsumerState<CustomDateRangePicker> {
                         context,
                         {"applied": false},
                       ),
-                      child: Text("cancel".tr(ref).toAllCapitalize()),
+                      child: Text("cancel".tr(ref).capitalizeAllFirstLetters()),
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton(
@@ -204,7 +189,7 @@ class _CustomDateRangePickerState extends ConsumerState<CustomDateRangePicker> {
                         context,
                         {"applied": true, "range": _selectedRange},
                       ),
-                      child: Text("apply".tr(ref).toAllCapitalize()),
+                      child: Text("apply".tr(ref).capitalizeAllFirstLetters()),
                     ),
                   ],
                 ),
@@ -237,13 +222,11 @@ class _CustomDateRangePickerState extends ConsumerState<CustomDateRangePicker> {
                 : Colors.transparent,
           ),
         ),
-        child: Text(
+        child: UIText(
           label,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-            color: isActive ? colorScheme.primary : colorScheme.onSurface,
-          ),
+          size: 14,
+          fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+          color: isActive ? colorScheme.primary : colorScheme.onSurface,
         ),
       ),
     );

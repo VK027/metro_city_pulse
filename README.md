@@ -192,7 +192,7 @@ flutter test
 
 ## License
 
-Private project — not published to pub.dev (`publish_to: 'none'`).
+This project is licensed under the [MIT License](LICENSE).
 
 ## Support
 
